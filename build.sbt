@@ -1,12 +1,9 @@
 lazy val root = (project in file("."))
+  .settings(publishSettings: _*)
   .settings(
-    inThisBuild(List(
-      organization := "com.github.tkrs",
-      scalaVersion := "2.12.2",
-      version      := "0.0.1-SNAPSHOT",
-      crossScalaVersions := Seq("2.11.11", "2.12.2")
-    )),
-    publishSettings,
+    organization := "com.github.tkrs",
+    scalaVersion := "2.12.2",
+    crossScalaVersions := Seq("2.11.11", "2.12.2"),
     name := "gcs-scala",
     libraryDependencies ++= Seq(
       "com.google.cloud" % "google-cloud-storage" % "1.2.3",
