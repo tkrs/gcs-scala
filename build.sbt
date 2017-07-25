@@ -1,34 +1,47 @@
 lazy val root = (project in file("."))
-  .settings(publishSettings: _*)
-  .settings(
-    organization := "com.github.tkrs",
-    scalaVersion := "2.12.2",
-    crossScalaVersions := Seq("2.11.11", "2.12.2"),
-    name := "gcs-scala",
-    libraryDependencies ++= Seq(
-      "com.google.cloud" % "google-cloud-storage" % "1.2.3",
-      "org.typelevel" %% "cats" % "0.9.0",
-      "org.scalatest" %% "scalatest" % "3.0.3" % "test"
-    ),
-    scalacOptions := Seq(
-      "-deprecation",
-      "-encoding", "UTF-8",
-      "-unchecked",
-      "-feature",
-      "-language:existentials",
-      "-language:higherKinds",
-      "-language:implicitConversions",
-      "-language:postfixOps",
-      "-Xfuture",
-      "-Xlint",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-unused-import",
-      "-Ydelambdafy:method"
-    ),
-    scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Ywarn-unused-import"))
-  )
+  .settings(allSettings: _*)
+  .settings(noPublishSettings: _*)
+  .aggregate(core)
+  .dependsOn(core)
+
+
+lazy val allSettings = Seq.concat(
+  buildSettings,
+  baseSettings,
+  publishSettings
+)
+
+lazy val buildSettings = Seq(
+  organization := "com.github.tkrs",
+  scalaVersion := "2.12.2",
+  crossScalaVersions := Seq("2.11.11", "2.12.2"),
+  name := "gcs-scala"
+)
+
+lazy val baseSettings = Seq(
+  libraryDependencies ++= Seq(
+    "com.google.cloud" % "google-cloud-storage" % "1.2.3",
+    "org.typelevel" %% "cats" % "0.9.0",
+    "org.scalatest" %% "scalatest" % "3.0.3" % "test"
+  ),
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-unchecked",
+    "-feature",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-language:postfixOps",
+    "-Yno-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-unused-import",
+    "-Xfuture",
+    "-Xlint"
+  ),
+  scalacOptions in (Compile, console) ~= (_ filterNot (_ == "-Ywarn-unused-import"))
+)
 
 lazy val publishSettings = Seq(
   releaseCrossBuild := true,
@@ -69,8 +82,16 @@ lazy val credentialSettings = Seq(
   } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
 )
 
-// lazy val noPublishSettings = Seq(
-//   publish := (),
-//   publishLocal := (),
-//   publishArtifact := false
-// )
+lazy val noPublishSettings = Seq(
+  publish := (),
+  publishLocal := (),
+  publishArtifact := false
+)
+
+lazy val core = project.in(file("core"))
+  .settings(allSettings: _*)
+  .settings(
+    description := "gcs-scala core",
+    moduleName := "gcs-scala-core",
+    name := "core"
+  )
