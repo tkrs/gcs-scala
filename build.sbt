@@ -1,6 +1,6 @@
-lazy val root = (project in file("."))
-  .settings(allSettings: _*)
-  .settings(noPublishSettings: _*)
+lazy val root = project.in(file("."))
+  .settings(allSettings)
+  .settings(noPublishSettings)
   .aggregate(core)
   .dependsOn(core)
 
@@ -13,8 +13,8 @@ lazy val allSettings = Seq.concat(
 
 lazy val buildSettings = Seq(
   organization := "com.github.tkrs",
-  scalaVersion := "2.12.2",
-  crossScalaVersions := Seq("2.11.11", "2.12.2"),
+  scalaVersion := "2.12.3",
+  crossScalaVersions := Seq("2.11.11", "2.12.3"),
   name := "gcs-scala"
 )
 
