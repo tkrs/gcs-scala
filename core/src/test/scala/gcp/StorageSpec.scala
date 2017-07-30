@@ -4,8 +4,8 @@ import java.io._
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets._
 
-import com.google.cloud.{ ReadChannel, RestorableState }
-import org.scalatest.{ FunSpec, Matchers }
+import com.google.cloud.{ReadChannel, RestorableState}
+import org.scalatest.{FunSpec, Matchers}
 
 class StorageSpec extends FunSpec with Matchers {
 
