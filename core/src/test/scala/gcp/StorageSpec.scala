@@ -38,7 +38,7 @@ class StorageSpec extends FunSpec with Matchers {
       val str =
         """
           |abc
-          |def
+          |def😅
           |
           |g
           |hijk
@@ -50,7 +50,11 @@ class StorageSpec extends FunSpec with Matchers {
       val reader = new BufferedReader(new InputStreamReader(in))
 
       val sb = new StringBuilder()
-      Iterator.continually(reader.readLine()).take(7).map(s => s"$s\n").foreach(sb.append)
+      Iterator
+        .continually(reader.readLine())
+        .take(7)
+        .map(s => s"$s\n")
+        .foreach(sb.append)
       reader.close()
       assert(sb.toString() === str)
     }
