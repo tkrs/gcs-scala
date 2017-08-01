@@ -20,37 +20,36 @@ object Storage {
     def fetch[F[_]](bucket: String, name: String, chunkSize: Int, options: GStorage.BlobSourceOption*)(
         implicit F: MonadError[F, Throwable]
     ): F[InputStream] =
-      F.catchNonFatal(transform(storageService.reader(BlobId.of(bucket, name)), chunkSize))
+      F.catchNonFatal(transform(storageService.reader(BlobId.of(bucket, name), options: _*), chunkSize))
   }
 
-  def transform(ch: ReadChannel, chunkSize: Int): InputStream =
-    new InputStream {
+  def transform(ch: ReadChannel, chunkSize: Int): InputStream = new InputStream {
 
-      private[this] val buffer: ByteBuffer =
-        ByteBuffer.allocateDirect(chunkSize)
+    private[this] val buffer: ByteBuffer =
+      ByteBuffer.allocateDirect(chunkSize)
 
-      private[this] lazy val initial: Int = {
-        val x = ch.read(buffer)
-        buffer.flip()
-        x
-      }
-
-      override def available(): Int = buffer.remaining()
-
-      override def read(): Int =
-        if (initial <= 0) -1
-        else if (buffer.hasRemaining) buffer.get & 0xff
-        else if ({ buffer.clear(); ch.read(buffer) } <= 0) -1
-        else { buffer.flip(); buffer.get & 0xff }
-
-      override def close(): Unit = {
-        super.close()
-        ch.close()
-        buffer.clear()
-      }
+    private[this] lazy val initial: Int = {
+      val x = ch.read(buffer)
+      buffer.flip()
+      x
     }
 
+    override def available(): Int = buffer.remaining()
+
+    override def read(): Int =
+      if (initial <= 0) -1
+      else if (buffer.hasRemaining) buffer.get & 0xff
+      else if ({ buffer.clear(); ch.read(buffer) } <= 0) -1
+      else { buffer.flip(); buffer.get & 0xff }
+
+    override def close(): Unit = {
+      super.close()
+      ch.close()
+      buffer.clear()
+    }
+  }
+
   object Service {
-    lazy val default: GStorage = StorageOptions.getDefaultInstance.getService
+    implicit lazy val default: GStorage = StorageOptions.getDefaultInstance.getService
   }
 }
