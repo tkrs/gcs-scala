@@ -17,7 +17,8 @@ lazy val buildSettings = Seq(
   crossScalaVersions := Seq("2.11.11", "2.12.3"),
   name := "gcs-scala",
   scalafmtOnCompile in Compile := true,
-  scalafmtTestOnCompile in Compile := true
+  scalafmtTestOnCompile in Compile := true,
+  scalafmtVersion := "1.1.0"
 )
 
 lazy val baseSettings = Seq(
