@@ -10,13 +10,13 @@ import org.scalatest.{FunSpec, Matchers}
 class StorageSpec extends FunSpec with Matchers {
 
   class ByteBufferReadChannel(src: ByteBuffer) extends ReadChannel {
-    var eof = false
-    var open = true
-    override def setChunkSize(chunkSize: Int): Unit = ???
+    var eof                                              = false
+    var open                                             = true
+    override def setChunkSize(chunkSize: Int): Unit      = ???
     override def capture(): RestorableState[ReadChannel] = ???
-    override def seek(position: Long): Unit = ()
-    override def close(): Unit = open = false
-    override def isOpen: Boolean = open
+    override def seek(position: Long): Unit              = ()
+    override def close(): Unit                           = open = false
+    override def isOpen: Boolean                         = open
     override def read(dst: ByteBuffer): Int = src.synchronized {
       if (eof) throw new EOFException()
       else if (src.remaining() == 0) {
@@ -24,7 +24,7 @@ class StorageSpec extends FunSpec with Matchers {
         -1
       } else {
         val toWrite = Math.min(src.remaining(), dst.remaining())
-        val arr = Array.ofDim[Byte](toWrite)
+        val arr     = Array.ofDim[Byte](toWrite)
         src.get(arr)
         dst.put(arr)
         toWrite
