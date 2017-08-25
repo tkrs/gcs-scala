@@ -4,7 +4,6 @@ lazy val root = project.in(file("."))
   .aggregate(core)
   .dependsOn(core)
 
-
 lazy val allSettings = Seq.concat(
   buildSettings,
   baseSettings,
@@ -15,10 +14,7 @@ lazy val buildSettings = Seq(
   organization := "com.github.tkrs",
   scalaVersion := "2.12.3",
   crossScalaVersions := Seq("2.11.11", "2.12.3"),
-  name := "gcs-scala",
-  scalafmtOnCompile in Compile := true,
-  scalafmtTestOnCompile in Compile := true,
-  scalafmtVersion := "1.1.0"
+  name := "gcs-scala"
 )
 
 lazy val baseSettings = Seq(
