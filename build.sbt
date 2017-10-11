@@ -19,7 +19,7 @@ lazy val buildSettings = Seq(
 
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
-    "com.google.cloud" % "google-cloud-storage" % "1.4.0",
+    "com.google.cloud" % "google-cloud-storage" % "1.7.0",
     "org.typelevel" %% "cats" % "0.9.0",
     "org.scalatest" %% "scalatest" % "3.0.3" % "test"
   ),
