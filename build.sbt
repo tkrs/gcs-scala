@@ -86,7 +86,7 @@ lazy val noPublishSettings = Seq(
 )
 
 lazy val core = project.in(file("core"))
-  .settings(allSettings: _*)
+  .settings(allSettings)
   .settings(
     description := "gcs-scala core",
     moduleName := "gcs-scala-core",
