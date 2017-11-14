@@ -1,3 +1,5 @@
+import Dependencies._
+
 lazy val root = project.in(file("."))
   .settings(allSettings)
   .settings(noPublishSettings)
@@ -12,17 +14,13 @@ lazy val allSettings = Seq.concat(
 
 lazy val buildSettings = Seq(
   organization := "com.github.tkrs",
-  scalaVersion := "2.12.4",
-  crossScalaVersions := Seq("2.11.11", "2.12.4"),
-  name := "gcs-scala"
+  name := "gcs-scala",
+  scalaVersion := Ver.`scala2.12`,
+  crossScalaVersions := Seq(Ver.`scala2.11`, Ver.`scala2.12`)
 )
 
 lazy val baseSettings = Seq(
-  libraryDependencies ++= Seq(
-    "com.google.cloud" % "google-cloud-storage" % "1.8.0",
-    "org.typelevel" %% "cats" % "0.9.0",
-    "org.scalatest" %% "scalatest" % "3.0.3" % "test"
-  ),
+  libraryDependencies ++= Seq(Pkg.googleCloudStorage, Pkg.cats) ++ Pkg.forTest,
   scalacOptions ++= Seq(
     "-deprecation",
     "-encoding", "UTF-8",
