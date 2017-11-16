@@ -16,7 +16,7 @@ object Main extends App {
   val Array(bucket, name) = args
   val Success(r) = storage
     .fetch[Try](bucket, name, 10)
-    .flatMap(a => Try(new BufferedReader(new InputStreamReader(a))))
+    .flatMap(a => Try(new BufferedReader(new InputStreamReader(new GZIPInputStream(a)))))
 
   try r.lines().forEach((s: String) => println(s))
   finally r.close()
