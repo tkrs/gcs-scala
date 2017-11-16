@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 
 import cats.MonadError
 import com.google.cloud.ReadChannel
-import com.google.cloud.storage.{BlobId, Storage => GStorage, StorageOptions}
+import com.google.cloud.storage.{BlobId, StorageOptions, Storage => GStorage}
 
 trait Storage {
   def fetch[F[_]](
@@ -31,33 +31,37 @@ object Storage {
   def transform(ch: ReadChannel, chunkSize: Int): InputStream =
     new InputStream {
 
+      private[this] var isEof = false
+
       private[this] val buffer: ByteBuffer =
         ByteBuffer.allocateDirect(chunkSize)
 
-      private[this] lazy val initial: Int = {
-        val x = ch.read(buffer)
-        buffer.flip()
-        x
-      }
+      ch.read(buffer)
+      buffer.flip()
 
       private def more: Int = {
-        buffer.clear()
-        ch.read(buffer)
-      }
-
-      private def first: Int = {
-        buffer.flip()
-        buffer.get & 0xff
+        if (isEof) -1
+        else {
+          buffer.clear()
+          val a = ch.read(buffer)
+          buffer.flip()
+          a
+        }
       }
 
       override def available(): Int =
-        buffer.remaining()
+        if (isEof) 0
+        else buffer.remaining()
 
-      override def read(): Int =
-        if (initial <= 0) -1
-        else if (buffer.hasRemaining) buffer.get & 0xff
-        else if (more <= 0) -1
-        else first
+      override def read(): Int = {
+        if (isEof) -1
+        else if (buffer.hasRemaining || more >= 0)
+          buffer.get & 0xff
+        else {
+          isEof = true
+          -1
+        }
+      }
 
       override def close(): Unit = {
         super.close()

@@ -92,3 +92,13 @@ lazy val core = project.in(file("core"))
     moduleName := "gcs-scala-core",
     name := "core"
   )
+
+lazy val example = project.in(file("example"))
+  .settings(allSettings)
+  .settings(noPublishSettings)
+  .settings(
+    description := "gcs-scala example",
+    moduleName := "gcs-scala-example",
+    name := "example"
+  )
+  .dependsOn(core)
