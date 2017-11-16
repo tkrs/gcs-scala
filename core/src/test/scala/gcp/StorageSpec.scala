@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets._
 
 import com.google.cloud.{ReadChannel, RestorableState}
 import org.scalatest.{FunSpec, Matchers}
+import scala.collection.JavaConverters._
 
 class StorageSpec extends FunSpec with Matchers {
 
@@ -44,19 +45,57 @@ class StorageSpec extends FunSpec with Matchers {
           |hijk
           |lmhopqr
           |""".stripMargin
-      val bb = ByteBuffer.wrap(Array.concat(str.getBytes(UTF_8), Array()))
-      val in = Storage.transform(new ByteBufferReadChannel(bb), 5)
+      val bb = ByteBuffer.wrap(str.getBytes(UTF_8))
+      val in = Storage.transform(new ByteBufferReadChannel(bb), 1)
 
       val reader = new BufferedReader(new InputStreamReader(in))
 
       val sb = new StringBuilder()
-      Iterator
-        .continually(reader.readLine())
-        .take(7)
+      reader
+        .lines()
+        .iterator()
+        .asScala
         .map(s => s"$s\n")
         .foreach(sb.append)
       reader.close()
       assert(sb.toString() === str)
+    }
+
+    it("should transform to valid InputStream when passed buffer is empty line present") {
+      val str = "\n"
+      val bb  = ByteBuffer.wrap(str.getBytes(UTF_8))
+      val in  = Storage.transform(new ByteBufferReadChannel(bb), 1)
+
+      val reader = new BufferedReader(new InputStreamReader(in))
+
+      val sb = new StringBuilder()
+      reader
+        .lines()
+        .iterator()
+        .asScala
+        .map(s => s"$s\n")
+        .foreach(sb.append)
+      reader.close()
+      assert(sb.toString() === str)
+    }
+
+    it("should throw UncheckedIOException if it is empty") {
+      val str = ""
+      val bb  = ByteBuffer.wrap(str.getBytes(UTF_8))
+      val in  = Storage.transform(new ByteBufferReadChannel(bb), 1)
+
+      val reader = new BufferedReader(new InputStreamReader(in))
+
+      val sb = new StringBuilder()
+      assertThrows[UncheckedIOException] {
+        reader
+          .lines()
+          .iterator()
+          .asScala
+          .map(s => s"$s\n")
+          .foreach(sb.append)
+        reader.close()
+      }
     }
   }
 }
