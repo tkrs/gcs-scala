@@ -20,7 +20,7 @@ lazy val buildSettings = Seq(
 )
 
 lazy val baseSettings = Seq(
-  libraryDependencies ++= Seq(Pkg.googleCloudStorage, Pkg.cats) ++ Pkg.forTest,
+  libraryDependencies ++= Seq(Pkg.googleCloudStorage, Pkg.catsCore) ++ Pkg.forTest,
   scalacOptions ++= Seq(
     "-deprecation",
     "-encoding", "UTF-8",
