@@ -8,7 +8,7 @@ object Dependencies {
     val cats                      = "1.0.1"
     val scalacheck                = "1.13.5"
     val scalatest                 = "3.0.4"
-    val googleCloudStorageVersion = "1.15.0"
+    val googleCloudStorageVersion = "1.16.0"
   }
 
   val Pkg = new {
